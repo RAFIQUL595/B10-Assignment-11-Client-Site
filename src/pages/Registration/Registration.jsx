@@ -5,6 +5,8 @@ import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext/AuthProvider";
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
+import SocialLogin from "../shared/SocialLogin/SocialLogin";
 
 const Registration = () => {
   const { handelRegister } = useContext(AuthContext);
@@ -16,10 +18,20 @@ const Registration = () => {
     const email = form.email.value;
     const photo = form.photo.value;
     const password = form.password.value;
+
+    // password length 6 characters check
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters long.");
+      return;
+    }
     handelRegister(email, password)
       .then((result) => {
         if (result) {
-          toast.success("Registered successfully");
+          Swal.fire({
+            title: "Registration Successful!",
+            text: "Your account has been created successfully. Please login now!",
+            icon: "success",
+          });
           navigate("/login");
         }
         form.reset();
@@ -39,7 +51,7 @@ const Registration = () => {
         <Lottie animationData={lottieRegister} />
       </div>
       <div className="card bg-base-100 w-full border-2 max-w-sm shrink-0 shadow-2xl">
-        <form onSubmit={handleSubmit} className="card-body">
+        <form onSubmit={handleSubmit} className="p-8">
           <h1 className="text-2xl text-center font-bold">Register now!</h1>
           <div className="form-control">
             <label className="label">
@@ -98,10 +110,11 @@ const Registration = () => {
             />
           </div>
           <div className="form-control mt-6">
-            <button className="btn btn-primary">Register</button>
+            <button className="btn btn-primary text-lg">Register</button>
           </div>
         </form>
-        <div className="card-body text-center">
+        <SocialLogin />
+        <div className="my-8 text-center">
           <p>
             Already have an account?{" "}
             <Link to="/login" className="text-blue-500">
