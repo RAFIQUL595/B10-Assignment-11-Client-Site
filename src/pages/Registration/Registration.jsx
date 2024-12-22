@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import SocialLogin from "../shared/SocialLogin/SocialLogin";
 
 const Registration = () => {
-  const { handelRegister } = useContext(AuthContext);
+  const { handelRegister, handelSignOut } = useContext(AuthContext);
   const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -32,6 +32,7 @@ const Registration = () => {
             text: "Your account has been created successfully. Please login now!",
             icon: "success",
           });
+          handelSignOut();
           navigate("/login");
         }
         form.reset();

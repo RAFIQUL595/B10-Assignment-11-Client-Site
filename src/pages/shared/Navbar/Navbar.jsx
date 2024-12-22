@@ -1,24 +1,25 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, NavLink } from "react-router-dom";
 import logo from "../../../assets/logo/logo.png";
 import { IoHomeOutline } from "react-icons/io5";
 import { MdOutlineEventAvailable } from "react-icons/md";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { FaCar } from "react-icons/fa";
-import { CiBookmarkPlus, CiLogin } from "react-icons/ci";
+import { CiBookmarkPlus, CiLogin, CiLogout } from "react-icons/ci";
 import { Helmet } from "react-helmet";
+import { AuthContext } from './../../../context/AuthContext/AuthProvider';
 
 const Navbar = () => {
+  const { user, handelSignOut } = useContext(AuthContext);
   // links
   const links = (
     <>
       <li className="flex items-center space-x-2">
         <NavLink
           className={({ isActive }) =>
-            `px-4 py-2 flex items-center ${
-              isActive
-                ? "bg-[#55efc4] text-blue-600 rounded-md"
-                : "hover:text-blue-700"
+            `px-4 py-2 flex items-center ${isActive
+              ? "bg-[#55efc4] text-blue-600 rounded-md"
+              : "hover:text-blue-700"
             }`
           }
           to="/"
@@ -30,10 +31,9 @@ const Navbar = () => {
       <li className="flex items-center space-x-2">
         <NavLink
           className={({ isActive }) =>
-            `px-4 py-2 flex items-center ${
-              isActive
-                ? "bg-[#55efc4] text-blue-600 rounded-md"
-                : "hover:text-blue-700"
+            `px-4 py-2 flex items-center ${isActive
+              ? "bg-[#55efc4] text-blue-600 rounded-md"
+              : "hover:text-blue-700"
             }`
           }
           to="/available-cars"
@@ -42,51 +42,54 @@ const Navbar = () => {
           <span className="ml-2 lg:text-xl">Available Cars</span>
         </NavLink>
       </li>
-      <li className="flex items-center space-x-2">
-        <NavLink
-          className={({ isActive }) =>
-            `px-4 py-2 flex items-center ${
-              isActive
-                ? "bg-[#55efc4] text-blue-600 rounded-md"
-                : "hover:text-blue-700"
-            }`
-          }
-          to="/add-car"
-        >
-          <IoIosAddCircleOutline className="size-4 lg:size-5" />
-          <span className="ml-2 lg:text-xl">Add Car</span>
-        </NavLink>
-      </li>
-      <li className="flex items-center space-x-2">
-        <NavLink
-          className={({ isActive }) =>
-            `px-4 py-2 flex items-center ${
-              isActive
-                ? "bg-[#55efc4] text-blue-600 rounded-md"
-                : "hover:text-blue-700"
-            }`
-          }
-          to="/my-cars"
-        >
-          <FaCar className="size-4 lg:size-5" />
-          <span className="ml-2 lg:text-xl">My Cars</span>
-        </NavLink>
-      </li>
-      <li className="flex items-center space-x-2">
-        <NavLink
-          className={({ isActive }) =>
-            `px-4 py-2 flex items-center ${
-              isActive
-                ? "bg-[#55efc4] text-blue-600 rounded-md"
-                : "hover:text-blue-700"
-            }`
-          }
-          to="/my-bookings"
-        >
-          <CiBookmarkPlus className="size-4 lg:size-5" />
-          <span className="ml-2 lg:text-xl">My Bookings</span>
-        </NavLink>
-      </li>
+      {
+        user && (
+          <>
+            <li className="flex items-center space-x-2">
+              <NavLink
+                className={({ isActive }) =>
+                  `px-4 py-2 flex items-center ${isActive
+                    ? "bg-[#55efc4] text-blue-600 rounded-md"
+                    : "hover:text-blue-700"
+                  }`
+                }
+                to="/add-car"
+              >
+                <IoIosAddCircleOutline className="size-4 lg:size-5" />
+                <span className="ml-2 lg:text-xl">Add Car</span>
+              </NavLink>
+            </li>
+            <li className="flex items-center space-x-2">
+              <NavLink
+                className={({ isActive }) =>
+                  `px-4 py-2 flex items-center ${isActive
+                    ? "bg-[#55efc4] text-blue-600 rounded-md"
+                    : "hover:text-blue-700"
+                  }`
+                }
+                to="/my-cars"
+              >
+                <FaCar className="size-4 lg:size-5" />
+                <span className="ml-2 lg:text-xl">My Cars</span>
+              </NavLink>
+            </li>
+            <li className="flex items-center space-x-2">
+              <NavLink
+                className={({ isActive }) =>
+                  `px-4 py-2 flex items-center ${isActive
+                    ? "bg-[#55efc4] text-blue-600 rounded-md"
+                    : "hover:text-blue-700"
+                  }`
+                }
+                to="/my-bookings"
+              >
+                <CiBookmarkPlus className="size-4 lg:size-5" />
+                <span className="ml-2 lg:text-xl">My Bookings</span>
+              </NavLink>
+            </li>
+          </>
+        )
+      }
     </>
   );
 
@@ -144,13 +147,25 @@ const Navbar = () => {
       </div>
       {/* navbar end */}
       <div className="navbar-end">
-        <Link
-          className="btn text-xl bg-[#1dd1a1] hover:bg-[#10ac84] text-white"
-          to="/login"
-        >
-          <CiLogin />
-          Login
-        </Link>
+        {
+          user ? <>
+            <button
+              onClick={handelSignOut}
+              className="btn text-xl bg-[#ff7675] hover:bg-[#ff6b6b] text-white"
+            >
+              <CiLogout />
+              Logout
+            </button>
+          </> : <>
+            <Link
+              className="btn text-xl bg-[#1dd1a1] hover:bg-[#10ac84] text-white"
+              to="/login"
+            >
+              <CiLogin />
+              Login
+            </Link>
+          </>
+        }
       </div>
     </div>
   );
