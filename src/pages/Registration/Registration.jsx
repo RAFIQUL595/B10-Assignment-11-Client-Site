@@ -1,16 +1,18 @@
-import React, { useContext } from "react";
+import React, { useState } from "react";
 import lottieRegister from "../../assets/lottiefiles/register.json";
 import Lottie from "lottie-react";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext/AuthProvider";
+import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import SocialLogin from "../shared/SocialLogin/SocialLogin";
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 
 const Registration = () => {
-  const { handelRegister, handelSignOut } = useContext(AuthContext);
+  const { handelRegister, handelSignOut, updateUser } = useAuth()
   const navigate = useNavigate();
+  const [isEyeOpen, setIsEyeOpen] = useState(false);
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -27,6 +29,7 @@ const Registration = () => {
     handelRegister(email, password)
       .then((result) => {
         if (result) {
+          updateUser(name, photo)
           Swal.fire({
             title: "Registration Successful!",
             text: "Your account has been created successfully. Please login now!",
@@ -96,19 +99,30 @@ const Registration = () => {
               required
             />
           </div>
-          <div className="form-control">
+          <div className="form-control relative">
             <label className="label">
               <span className="label-text">
                 Password <span className="text-red-500">*</span>
               </span>
             </label>
             <input
-              type="password"
+              type={isEyeOpen ? "text" : "password"}
               name="password"
               placeholder="Enter your password"
               className="input input-bordered"
               required
             />
+            {isEyeOpen ? (
+              <IoEyeOutline
+                className=" absolute top-12 right-4 text-[1.5rem] text-[#777777] cursor-pointer"
+                onClick={() => setIsEyeOpen(false)}
+              />
+            ) : (
+              <IoEyeOffOutline
+                className=" absolute top-12 right-4 text-[1.5rem] text-[#777777] cursor-pointer"
+                onClick={() => setIsEyeOpen(true)}
+              />
+            )}
           </div>
           <div className="form-control mt-6">
             <button className="btn btn-primary text-lg">Register</button>

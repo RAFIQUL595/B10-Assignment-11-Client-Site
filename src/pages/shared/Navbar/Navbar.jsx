@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import logo from "../../../assets/logo/logo.png";
 import { IoHomeOutline } from "react-icons/io5";
@@ -7,10 +7,11 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { FaCar } from "react-icons/fa";
 import { CiBookmarkPlus, CiLogin, CiLogout } from "react-icons/ci";
 import { Helmet } from "react-helmet";
-import { AuthContext } from './../../../context/AuthContext/AuthProvider';
+import useAuth from "../../../hooks/useAuth";
 
 const Navbar = () => {
-  const { user, handelSignOut } = useContext(AuthContext);
+  const { user, handelSignOut } = useAuth()
+
   // links
   const links = (
     <>

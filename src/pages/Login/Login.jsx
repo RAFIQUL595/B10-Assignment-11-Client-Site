@@ -1,16 +1,18 @@
-import React, { useContext } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import SocialLogin from '../shared/SocialLogin/SocialLogin';
 import { Helmet } from 'react-helmet';
 import lottieLogin from '../../assets/lottiefiles/login.json';
 import Lottie from 'lottie-react';
-import { AuthContext } from '../../context/AuthContext/AuthProvider';
+import useAuth from '../../hooks/useAuth';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 
 const Login = () => {
-    const { handelLogin } = useContext(AuthContext);
+    const { handelLogin } =useAuth()
     const navigate = useNavigate();
+    const [isEyeOpen, setIsEyeOpen] = useState(false);
     const handleSubmitLogin = (e) => {
         e.preventDefault();
         const form = e.target;
@@ -57,19 +59,30 @@ const Login = () => {
                             required
                         />
                     </div>
-                    <div className="form-control">
+                    <div className="form-control relative">
                         <label className="label">
                             <span className="label-text">
                                 Password <span className="text-red-500">*</span>
                             </span>
                         </label>
                         <input
-                            type="password"
+                            type={isEyeOpen ? "text" : "password"}
                             name="password"
                             placeholder="Enter your password"
                             className="input input-bordered"
                             required
                         />
+                        {isEyeOpen ? (
+                            <IoEyeOutline
+                                className=" absolute top-12 right-4 text-[1.5rem] text-[#777777] cursor-pointer"
+                                onClick={() => setIsEyeOpen(false)}
+                            />
+                        ) : (
+                            <IoEyeOffOutline
+                                className=" absolute top-12 right-4 text-[1.5rem] text-[#777777] cursor-pointer"
+                                onClick={() => setIsEyeOpen(true)}
+                            />
+                        )}
                     </div>
                     <div className="form-control mt-6">
                         <button className="btn btn-primary text-lg">Login</button>

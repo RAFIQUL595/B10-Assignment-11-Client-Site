@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
-import { AuthContext } from '../../../context/AuthContext/AuthProvider';
+import React from 'react';
+import useAuth from '../../../hooks/useAuth';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 const SocialLogin = () => {
-    const { handelGoogleRegister } = useContext(AuthContext);
+    const { handelGoogleRegister } = useAuth()
     const navigate = useNavigate();
     const handleGoogleSignIn = () => {
         handelGoogleRegister()

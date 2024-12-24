@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import auth from "../../firebase/firebase.info";
-import { createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import toast from "react-hot-toast";
 export const AuthContext = createContext(null);
 
@@ -35,6 +35,23 @@ const AuthProvider = ({ children }) => {
     return signOut(auth);
   };
 
+  // Update user profile
+  const updateUser = (name, photo) => {
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      return updateProfile(currentUser, {
+        displayName: name,
+        photoURL: photo,
+      }).then(() => {
+        setUser({
+          ...currentUser,
+          displayName: name,
+          photoURL: photo,
+        });
+      });
+    }
+  };
+
   useEffect(() => {
     // Firebase auth state listener
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -57,6 +74,7 @@ const AuthProvider = ({ children }) => {
     handelGoogleRegister,
     handelLogin,
     handelSignOut,
+    updateUser,
   };
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
