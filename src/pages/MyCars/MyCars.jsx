@@ -54,9 +54,40 @@ const MyCars = () => {
         setShowModal(true);
     };
 
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
+        try {
+            // Show confirmation dialog first
+            const result = await Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be deleted this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            });
 
+            if (result.isConfirmed) {
+                // Proceed with delete if user confirms
+                const { data } = await useAxios.delete(`/cars/${id}`);
+
+                // Validate response
+                if (data.deletedCount > 0) {
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "The car has been deleted.",
+                        icon: "success"
+                    });
+                    fetchAllCars();
+                } else {
+                    throw new Error("Deletion failed. No records were deleted.");
+                }
+            }
+        } catch (error) {
+            toast.error(error.message || "An error occurred while deleting the car.");
+        }
     };
+
 
     const handleCloseModal = () => {
         setShowModal(false);
@@ -168,7 +199,7 @@ const MyCars = () => {
                                         </span>
                                     </td>
                                     <td className="px-4 py-2 border-b border-gray-300">
-                                        {new Date(car.dateAdded).toLocaleDateString()}
+                                        {new Date(car.dateAdded).toLocaleDateString("en-GB").replace(/\//g, "-")}
                                     </td>
                                     <td className="px-4 py-2 border-b border-gray-300">
                                         <button
@@ -178,7 +209,7 @@ const MyCars = () => {
                                             Update
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(index)}
+                                            onClick={() => handleDelete(car._id)}
                                             className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                                         >
                                             Delete
