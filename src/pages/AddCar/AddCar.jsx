@@ -10,8 +10,6 @@ const AddCar = () => {
     const { user } = useAuth()
     const navigate = useNavigate()
 
-
-
     const handelAddCar = async e => {
         e.preventDefault()
         const form = e.target;
