@@ -5,6 +5,7 @@ import Login from "../pages/Login/Login";
 import Registration from "../pages/Registration/Registration";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import AddCar from "../pages/AddCar/AddCar";
+import MyCars from "../pages/MyCars/MyCars";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
       {
         path: "/add-car",
         element: <AddCar></AddCar>,
+      },
+      {
+        path: "/my-cars",
+        element: <MyCars></MyCars>,
       },
       {
         path: "/login",

@@ -1,5 +1,3 @@
-import React, { useCallback, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
 import { Helmet } from 'react-helmet';
 import useAuth from '../../hooks/useAuth';
 import { useAxios } from '../../hooks/useAxios';
@@ -9,27 +7,10 @@ import toast from 'react-hot-toast';
 
 
 const AddCar = () => {
-    const [images, setImages] = useState([]);
     const { user } = useAuth()
     const navigate = useNavigate()
 
-    const onDrop = useCallback((acceptedFiles) => {
-        const uploadedImages = acceptedFiles.map((file) => ({
-            file,
-            preview: URL.createObjectURL(file),
-        }));
-        setImages((prev) => [...prev, ...uploadedImages]);
-    }, []);
 
-    const { getRootProps, getInputProps } = useDropzone({
-        onDrop,
-        accept: { 'image/*': [] },
-        multiple: true,
-    });
-
-    const removeImage = (index) => {
-        setImages((prev) => prev.filter((_, i) => i !== index));
-    };
 
     const handelAddCar = async e => {
         e.preventDefault()
@@ -45,7 +26,7 @@ const AddCar = () => {
         const dateAdded = new Date().toISOString();
         const formData = {
             carModel,
-            user: {
+            users: {
                 email: user?.email,
                 name: user?.displayName,
                 photo: user?.photoURL,
@@ -61,7 +42,7 @@ const AddCar = () => {
             bookingStatus: {
                 status: 'pending',
             },
-            count: 0,
+            bookingCount: 0,
         }
 
         // Sending data via Axios
@@ -181,35 +162,16 @@ const AddCar = () => {
                 {/* Images */}
                 <div className="mb-4">
                     <label className="block text-gray-700 font-bold mb-2">
-                        Images <span className="text-red-500">*</span>
+                        Car Image URL <span className="text-red-500">*</span>
                     </label>
-                    <div
-                        {...getRootProps()}
-                        className="border-dashed border-2 border-gray-300 rounded p-4 text-center cursor-pointer"
-                    >
-                        <input {...getInputProps()} required name="carImage" />
-                        <p>Drag & drop images here, or click to select files</p>
-                    </div>
-                    <div className="mt-4 grid grid-cols-3 gap-4">
-                        {images.map((image, index) => (
-                            <div key={index} className="relative">
-                                <img
-                                    src={image.preview}
-                                    alt={`Preview ${index}`}
-                                    className="rounded shadow-md"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => removeImage(index)}
-                                    className="absolute top-1 right-1 bg-red-500 text-white text-xs px-1 rounded"
-                                >
-                                    ×
-                                </button>
-                            </div>
-                        ))}
-                    </div>
+                    <input
+                        type="url"
+                        name='carImage'
+                        placeholder="e.g., https://example.com/car-image.jpg"
+                        className="input input-bordered w-full"
+                        required
+                    />
                 </div>
-
 
                 {/* Description */}
                 <div className="mb-4">
