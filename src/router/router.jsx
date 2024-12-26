@@ -7,6 +7,8 @@ import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import AddCar from "../pages/AddCar/AddCar";
 import MyCars from "../pages/MyCars/MyCars";
 import AvailableCars from "../pages/AvailableCars/AvailableCars";
+import CarDetails from "../pages/CarDetails/CarDetails";
+import MyBookings from "../pages/MyBookings/MyBookings";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +31,14 @@ const router = createBrowserRouter([
       {
         path: "/my-cars",
         element: <MyCars></MyCars>,
+      },
+      {
+        path: "/car-details/:id",
+        element: <CarDetails></CarDetails>,
+      },
+      {
+        path: "/my-bookings",
+        element: <MyBookings></MyBookings>,
       },
       {
         path: "/login",
