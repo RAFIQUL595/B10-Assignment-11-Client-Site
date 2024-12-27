@@ -2,22 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { CiBoxList, CiGrid41, CiLocationOn } from 'react-icons/ci';
 import { Link } from 'react-router-dom';
 import { useAxios } from '../../hooks/useAxios';
+import { Helmet } from 'react-helmet';
 
 const AvailableCars = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isGridView, setIsGridView] = useState(true);
     const [sortOption, setSortOption] = useState('dateDesc');
-    const [cars, setCars] = useState([])
+    const [cars, setCars] = useState([]);
 
     useEffect(() => {
         const fetchAllCars = async () => {
-            const { data } = await useAxios.get(
-                `/cars`
-            )
-            setCars(data)
-        }
-        fetchAllCars()
-    }, [])
+            const { data } = await useAxios.get('/cars');
+            setCars(data);
+        };
+        fetchAllCars();
+    }, []);
 
     // Handle search input change
     const handleSearchChange = (e) => {
@@ -31,26 +30,40 @@ const AvailableCars = () => {
     );
 
     // Sort cars based on the selected option
-    const sortedCars = filteredCars.sort((a, b) => {
-        if (sortOption === 'priceAsc') {
-            return parseInt(a.price.replace('$', '').replace(',', '')) - parseInt(b.price.replace('$', '').replace(',', ''));
-        } else if (sortOption === 'priceDesc') {
-            return parseInt(b.price.replace('$', '').replace(',', '')) - parseInt(a.price.replace('$', '').replace(',', ''));
-        } else if (sortOption === 'dateAsc') {
-            return new Date(a.dateAdded) - new Date(b.dateAdded);
-        } else if (sortOption === 'dateDesc') {
-            return new Date(b.dateAdded) - new Date(a.dateAdded);
-        }
-        return 0;
-    });
+    const sortCars = (cars, sortOption) => {
+        return cars.sort((a, b) => {
+            switch (sortOption) {
+                case 'dateDesc':
+                    return new Date(b.dateAdded) - new Date(a.dateAdded);
+                case 'dateAsc':
+                    return new Date(a.dateAdded) - new Date(b.dateAdded);
+                case 'priceAsc':
+                    return a.price - b.price;
+                case 'priceDesc':
+                    return b.price - a.price;
+                default:
+                    return 0;
+            }
+        });
+    };
+
+    const handleSortChange = (e) => {
+        setSortOption(e.target.value);
+    };
 
     // Toggle between grid and list views
     const toggleView = () => {
         setIsGridView((prev) => !prev);
     };
 
+    // Apply sorting to filtered cars
+    const sortedFilteredCars = sortCars(filteredCars, sortOption);
+
     return (
         <div className='my-10'>
+            <Helmet>
+                <title>Available Cars | Car Rental</title>
+            </Helmet>
             {/* Search Bar */}
             <input
                 type="text"
@@ -66,7 +79,7 @@ const AvailableCars = () => {
                     <label className="mr-2 font-bold">Sort by:</label>
                     <select
                         value={sortOption}
-                        onChange={(e) => setSortOption(e.target.value)}
+                        onChange={handleSortChange}
                         className="mb-6 p-3 border border-gray-300 rounded-md"
                     >
                         <option value="dateDesc">Newest First (Date)</option>
@@ -85,14 +98,13 @@ const AvailableCars = () => {
                         {isGridView ? <CiBoxList className='size-10' /> : <CiGrid41 className='size-10' />}
                     </button>
                 </div>
-
             </div>
 
             {/* Cars View */}
             <div
                 className={`${isGridView ? 'grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8' : 'space-y-6'}`}
             >
-                {sortedCars.filter(car => car?.availability === "Available").map((car) => (
+                {sortedFilteredCars.filter(car => car?.availability === "Available").map((car) => (
                     <div
                         key={car._id}
                         className={`${isGridView
@@ -112,9 +124,7 @@ const AvailableCars = () => {
                             <p className="text-sm text-gray-700">Date Added: {new Date(car.dateAdded).toLocaleDateString("en-GB").replace(/\//g, "-")}</p>
 
                             {/* Book Now Button */}
-                            <Link
-                                to={`/car-details/${car._id}`}
-                            >
+                            <Link to={`/car-details/${car._id}`}>
                                 <button className="px-6 w-full mt-2 py-3 bg-primary border-none text-white text-lg rounded">
                                     Book Now
                                 </button>

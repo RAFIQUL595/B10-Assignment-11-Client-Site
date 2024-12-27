@@ -30,13 +30,17 @@ const Registration = () => {
       .then((result) => {
         if (result) {
           updateUser(name, photo)
-          Swal.fire({
-            title: "Registration Successful!",
-            text: "Your account has been created successfully. Please login now!",
-            icon: "success",
-          });
-          handelSignOut();
-          navigate("/login");
+          .then(()=>{
+            Swal.fire({
+              title: "Registration Successful!",
+              text: "Your account has been created successfully. Please login now!",
+              icon: "success",
+            });
+            handelSignOut()
+            .then(()=>{
+              navigate("/login");
+            })
+          })
         }
         form.reset();
       })

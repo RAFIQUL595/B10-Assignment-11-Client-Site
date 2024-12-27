@@ -4,6 +4,7 @@ import { useAxios } from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
+import { Helmet } from 'react-helmet';
 
 
 const CarDetails = () => {
@@ -34,7 +35,9 @@ const CarDetails = () => {
         carImage,
         _id,
         users,
+        bookingStatus
     } = car || {}
+    console.log(car);
 
     const handleBookNow = () => {
         setModalOpen(true);
@@ -64,6 +67,7 @@ const CarDetails = () => {
             description,
             carImage,
             carId,
+            bookingStatus,
             user: user?.email
         };
 
@@ -89,6 +93,9 @@ const CarDetails = () => {
 
     return (
         <div className="p-6">
+            <Helmet>
+                <title>Car Details | Car Rental</title>
+            </Helmet>
             {/* Car details */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Left: Images */}
