@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { CiBoxList, CiGrid41, CiLocationOn } from 'react-icons/ci';
 import { Link } from 'react-router-dom';
-import { useAxios } from '../../hooks/useAxios';
+
 import { Helmet } from 'react-helmet';
+import useAxios from '../../hooks/useAxios';
+
 
 const AvailableCars = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isGridView, setIsGridView] = useState(true);
     const [sortOption, setSortOption] = useState('dateDesc');
     const [cars, setCars] = useState([]);
+    const axiosSecure=useAxios()
+
 
     useEffect(() => {
         const fetchAllCars = async () => {
-            const { data } = await useAxios.get('/cars');
+            const { data } = await axiosSecure.get('/cars');
             setCars(data);
         };
         fetchAllCars();

@@ -1,14 +1,16 @@
 import { Helmet } from 'react-helmet';
-import useAuth from '../../hooks/useAuth';
-import { useAxios } from '../../hooks/useAxios';
+
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
+import useAuth from '../../hooks/useAuth';
+import useAxios from '../../hooks/useAxios';
 
 
 const AddCar = () => {
     const { user } = useAuth()
     const navigate = useNavigate()
+    const axiosSecure = useAxios()
 
     const handelAddCar = async e => {
         e.preventDefault()
@@ -45,7 +47,7 @@ const AddCar = () => {
 
         // Sending data via Axios
         try {
-            const response = await useAxios.post("/cars", formData);
+            const response = await axiosSecure.post("/cars", formData);
             if (response.data.insertedId) {
                 Swal.fire({
                     title: "Good job!",

@@ -2,6 +2,7 @@ import React, { createContext, useEffect, useState } from "react";
 import auth from "../../firebase/firebase.info";
 import { createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import toast from "react-hot-toast";
+import axios from "axios";
 export const AuthContext = createContext(null);
 
 const googleProvider = new GoogleAuthProvider();
@@ -31,7 +32,7 @@ const AuthProvider = ({ children }) => {
   // Sign Out User
   const handelSignOut = () => {
     setLoading(true);
-    toast.success("Log Out Successfully");
+    toast.success("Log Out Successfully", { id: "logout" });
     return signOut(auth);
   };
 
@@ -54,13 +55,31 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Firebase auth state listener
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setUser(currentUser);
+      if (currentUser?.email) {
+        const user = { email: currentUser.email };
+        const { data } = await axios
+          .post("http://localhost:5000/jwt", user, {
+            withCredentials: true,
+          })
+          .then((res) => {
+
+            setLoading(false);
+          });
       } else {
-        setUser(null);
+        const { data } = await  axios
+          .get(
+            "http://localhost:5000/logout",
+            {},
+            {
+              withCredentials: true,
+            }
+          )
+          .then((res) => {
+            setLoading(false);
+          });
       }
-      setLoading(false);
     });
 
     // Cleanup the auth listener when component is unmounted

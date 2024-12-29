@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useAxios } from "../../hooks/useAxios";
 import moment from "moment";
+import useAxios from "../../hooks/useAxios";
 
 const RecentListings = () => {
     const [cars, setCars] = useState([]);
+    const axiosSecure = useAxios()
 
     useEffect(() => {
         const fetchAllCars = async () => {
-            const { data } = await useAxios.get(`/cars`);
+            const { data } = await axiosSecure.get(`/cars`);
             setCars(data);
         };
         fetchAllCars();
@@ -35,7 +36,7 @@ const RecentListings = () => {
                             >
                                 {car.availability}
                             </span></p>
-                            <p className="text-sm text-gray-500">Booking_count: {car.bookingCount}</p>
+                            <p className="text-sm text-gray-500">Booking Count: {car.bookingCount}</p>
                             <p className="text-sm text-gray-400">
                                 {/* Date Posted: {moment(new Date(car.dateAdded)).fromNow()} */}
                                 {moment(car.dateAdded).fromNow()}

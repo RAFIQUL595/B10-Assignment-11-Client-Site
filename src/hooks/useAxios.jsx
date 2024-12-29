@@ -1,12 +1,43 @@
 import axios from 'axios';
-import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import useAuth from './useAuth';
+import { useEffect } from 'react';
+import toast from 'react-hot-toast';
+
 const axiosInstance = axios.create({
     baseURL: "http://localhost:5000",
     withCredentials: true,
 });
 
-// const useAxios = () => {
-//     return axiosInstance
-// };
+const useAxios = () => {
+    const { handelSignOut } = useAuth();
+    const navigate = useNavigate();
 
-export const useAxios = axiosInstance;
+    useEffect(() => {
+        const interceptor = axiosInstance.interceptors.response.use(
+            (response) => response,
+            (error) => {
+                if (error.response?.status === 401 || error.response?.status === 403) {
+                    // Handle unauthorized or forbidden responses
+                    handelSignOut()
+                        .then(() => {
+                            navigate("/login");
+                        })
+                        .catch((err) => {
+                            toast.error("Error logging out:", err);
+                        });
+                }
+                return Promise.reject(error);
+            }
+        );
+
+        // Cleanup: Eject the interceptor when the component using this hook unmounts
+        return () => {
+            axiosInstance.interceptors.response.eject(interceptor);
+        };
+    }, [handelSignOut, navigate]);
+
+    return axiosInstance;
+};
+
+export default useAxios;

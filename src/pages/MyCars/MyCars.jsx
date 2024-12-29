@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAxios } from '../../hooks/useAxios';
+
 import useAuth from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
 import { Helmet } from 'react-helmet';
 import Swal from 'sweetalert2';
+import useAxios from '../../hooks/useAxios';
 
 const MyCars = () => {
     const { user } = useAuth();
@@ -12,6 +13,8 @@ const MyCars = () => {
     const [sortOption, setSortOption] = useState('dateDesc');
     const [showModal, setShowModal] = useState(false);
     const [selectedCar, setSelectedCar] = useState(null);
+    const axiosSecure=useAxios()
+  
 
     useEffect(() => {
         if (user?.email) {
@@ -21,7 +24,7 @@ const MyCars = () => {
 
     const fetchAllCars = async () => {
         try {
-            const { data } = await useAxios.get(`/my-cars/${user?.email}`);
+            const { data } = await axiosSecure.get(`/my-cars/${user?.email}`);
             setCars(data);
         } catch (error) {
             toast.error("Error fetching cars:", error);
@@ -69,7 +72,7 @@ const MyCars = () => {
 
             if (result.isConfirmed) {
                 // Proceed with delete if user confirms
-                const { data } = await useAxios.delete(`/cars/${id}`);
+                const { data } = await axiosSecure.delete(`/cars/${id}`);
 
                 // Validate response
                 if (data.deletedCount > 0) {
@@ -115,7 +118,7 @@ const MyCars = () => {
 
         try {
             // Send the updated car data to the API
-            await useAxios.put(`/my-cars/${selectedCar._id}`, updatedCar);
+            await axiosSecure.put(`/my-cars/${selectedCar._id}`, updatedCar);
 
             // Show success modal if the update is successful
             Swal.fire({
@@ -169,20 +172,20 @@ const MyCars = () => {
             ) : (
                 <div className="overflow-x-auto">
                     <table className="min-w-full bg-white border border-gray-300">
-                        <thead className="bg-gray-100">
-                            <tr>
-                                <th className="px-4 py-2 text-left border-b border-gray-300">Car Image</th>
-                                <th className="px-4 py-2 text-left border-b border-gray-300">Car Model</th>
-                                <th className="px-4 py-2 text-left border-b border-gray-300">Daily Rental Price</th>
-                                <th className="px-4 py-2 text-left border-b border-gray-300">Booking Count</th>
-                                <th className="px-4 py-2 text-left border-b border-gray-300">Availability</th>
-                                <th className="px-4 py-2 text-left border-b border-gray-300">Date Added</th>
-                                <th className="px-4 py-2 text-left border-b border-gray-300">Actions</th>
+                        <thead>
+                            <tr className="bg-gray-100 text-center">
+                                <th className="px-4 py-2 border-b border-gray-300 ">Car Image</th>
+                                <th className="px-4 py-2 border-b border-gray-300">Car Model</th>
+                                <th className="px-4 py-2 border-b border-gray-300">Daily Rental Price</th>
+                                <th className="px-4 py-2 border-b border-gray-300">Booking Count</th>
+                                <th className="px-4 py-2 border-b border-gray-300">Availability</th>
+                                <th className="px-4 py-2 border-b border-gray-300">Date Added</th>
+                                <th className="px-4 py-2 border-b border-gray-300">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {sortCars(cars, sortOption).map((car, index) => (
-                                <tr key={index} className="hover:bg-gray-50">
+                                <tr key={index} className="hover:bg-gray-50 text-center">
                                     <td className="px-4 py-2 border-b border-gray-300">
                                         <img
                                             src={car.carImage}

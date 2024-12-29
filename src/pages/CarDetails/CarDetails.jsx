@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useAxios } from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
 import { Helmet } from 'react-helmet';
+import useAxios from '../../hooks/useAxios';
+
+
 
 
 const CarDetails = () => {
@@ -13,14 +15,15 @@ const CarDetails = () => {
     const { id } = useParams();
     const { user } = useAuth()
     const navigate = useNavigate()
+    const axiosSecure=useAxios()
 
     useEffect(() => {
         const fetchCarData = async () => {
             try {
-                const { data } = await useAxios.get(`/cars/${id}`);
+                const { data } = await axiosSecure.get(`/cars/${id}`);
                 setCar(data);
             } catch (error) {
-                console.error('Error fetching car data:', error);
+                toast.error('Error fetching car data:', error);
             }
         };
         fetchCarData();
@@ -37,7 +40,6 @@ const CarDetails = () => {
         users,
         bookingStatus
     } = car || {}
-    console.log(car);
 
     const handleBookNow = () => {
         setModalOpen(true);
@@ -68,11 +70,12 @@ const CarDetails = () => {
             carImage,
             carId,
             bookingStatus,
-            user: user?.email
+            user: user?.email,
+            endDate: new Date()
         };
 
         try {
-            useAxios.post("/add-count", bookingData);
+            axiosSecure.post("/add-count", bookingData);
             Swal.fire({
                 title: "Good job!",
                 text: "Booking Successful!",
