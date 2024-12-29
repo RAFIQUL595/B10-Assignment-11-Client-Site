@@ -60,7 +60,7 @@ const AuthProvider = ({ children }) => {
       if (currentUser?.email) {
         const user = { email: currentUser.email };
         const { data } = await axios
-          .post("http://localhost:5000/jwt", user, {
+          .post("https://car-rental-server-tawny.vercel.app/jwt", user, {
             withCredentials: true,
           })
           .then((res) => {
@@ -70,7 +70,7 @@ const AuthProvider = ({ children }) => {
       } else {
         const { data } = await  axios
           .get(
-            "http://localhost:5000/logout",
+            "https://car-rental-server-tawny.vercel.app/logout",
             {},
             {
               withCredentials: true,

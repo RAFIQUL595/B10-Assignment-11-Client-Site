@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 
 const axiosInstance = axios.create({
-    baseURL: "http://localhost:5000",
+    baseURL: "https://car-rental-server-tawny.vercel.app",
     withCredentials: true,
 });
 
